@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import Tile from 'react-bulma-components/lib/components/tile';
 
 import Site from './layout/Site'
-import Header from './layout/Header'
+import {Header} from './layout/Header'
 import Content from './layout/Content'
 import Router from './layout/Router'
 import Footer from './layout/Footer'
@@ -16,7 +16,7 @@ const Layout = ({ children }) => (
       title="Friends of Noise"
       meta={[
         { name: 'description', content: 'membership and store portals for the PDX-based non-profit!' },
-        { name: 'keywords', content: 'all ages venues, concerts, portland, pdx, music, shows, scene, events, tickets, reservations, merchandise, store, friends, of, noise, friends of noise, fon, oregon' }
+        { name: 'keywords', content: 'all ages venues, concerts, portland, pdx, music, shows, scene, events, tickets, reservations, merchandise, store, friends, of, noise, friends of noise, fon, oregon, venue' }
       ]}
       // script={[
       //   { 'src': 'https://use.fontawesome.com/releases/v5.0.4/js/all.js'}
@@ -29,7 +29,7 @@ const Layout = ({ children }) => (
     <Content>
       <Router />
       <Tile kind="ancestor">
-	    {/* {children()} */}
+	      {/* {children()} */}
       </Tile>
     </Content>
     <Footer />

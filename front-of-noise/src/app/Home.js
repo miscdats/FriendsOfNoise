@@ -1,4 +1,8 @@
-import React from 'react'
+import React from 'react';
+// import { Link } from 'react-router-dom';
+// import { connect } from 'react-redux';
+
+// import { userActions } from '../_actions';
 
 const Home = () =>  (
   <section className="section">
