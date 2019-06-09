@@ -1,21 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import './index.scss';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+
+import { store } from './_helpers';
+import Client from './Client';
+
+import './styles/css/index.css';
+import 'font-awesome/css/font-awesome.min.css';
+
 import * as serviceWorker from './serviceWorker';
-import { BrowserRouter as Router } from 'react-router-dom';
+// import { BrowserRouter as Router } from 'react-router-dom';
 
+// import Firebase, {FirebaseContext} from './Firebase';
 
-//Firebase imports
-import Firebase, {FirebaseContext} from './app/components/Firebase';
-
-
-
-ReactDOM.render((
-  <Router>
-    <App />
-  </Router>
-), document.getElementById('root'));
-
+render(
+  <Provider store={store}>
+    <Client />
+  </Provider>,
+  document.getElementById('root')
+);
 
 serviceWorker.unregister();
