@@ -1,12 +1,10 @@
 import React from 'react';
+import UserProfile from './profile/UserProfile';
 
 const Profile = () => (
   <section className="section">
     <div className="container">
       <h1 className="title">Friends of Noise</h1>
-      <nav className="navbar">
-
-      </nav>
       <p className="subtitle">
         All ages <strong>always</strong>!
       </p>
@@ -15,6 +13,7 @@ const Profile = () => (
       </p>
     <div className="col-md-6">
       <br />
+      <UserProfile />
     </div>
     </div>
   </section>

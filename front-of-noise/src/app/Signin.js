@@ -5,9 +5,6 @@ const Signin = () => (
   <section className="section">
     <div className="container">
       <h1 className="title">Friends of Noise</h1>
-      <nav className="navbar">
-
-      </nav>
       <p className="subtitle">
         All ages <strong>always</strong>!
       </p>
@@ -16,7 +13,7 @@ const Signin = () => (
       </p>
     <div className="col-md-6">
       <br />
-      <Auth />
+    <Auth/>
     </div>
     </div>
   </section>

@@ -1,135 +1,179 @@
 import React, {Component} from 'react';
+import {auth} from '../../Firebase'
+import '../../_components/SocialButtonList.css'
+//import SocialButtonList from '../../_components/SocialButtonList'
+import{withRouter} from 'react-router-dom'
+import PropTypes from 'prop-types';
+
 
 /* Import Components */
 import Tile from 'react-bulma-components/lib/components/tile';
 import Heading from 'react-bulma-components/lib/components/heading';
 import Section from 'react-bulma-components/lib/components/section';
-import Box from 'react-bulma-components/lib/components/box';
+
+const buttonList = {
+    github: {
+        visible:true, 
+        provider:()=>{
+            const provider = auth.githubOAuth();
+            provider.addScope('user');
+            return provider;
+        }
+    }, 
+    twitter: {
+    visible: true,
+    provider: () => auth.twitterOAuth()
+  },
+  facebook: {
+    visible: true,
+    provider: () => auth.facebookOAuth()
+  },
+    
+    email: {
+        visible:true,
+        provider:()=>auth.emailOAuth()
+    }
+    
+    
+};
 
 class Auth extends Component {
 
-  state = {
-    authenticated: false
+    componentDidMount() {
+    auth.getAuth().onAuthStateChanged(user => {
+      if (user) {
+        this.props.history.push('/profile');      
+      }
+    });
   }
-
-  loginWithEmailAndPassword = () => { this.setState({ authenticated: true }) }
-
-  loginWithProvider = () => { this.setState({ authenticated: true }) }
-
-  handleClose = () => { this.setState({ authenticated: false }) }
 
   render() {
     return(
-      <section className="section">
-        <Tile renderAs="article" notification color="primary">
-        <div style={{ margin: '10px 8px 10px' }}>
-        <Heading>Log in!</Heading>
-        <Heading subtitle>or <a href="/signup">register</a>~</Heading>
-        </div>
-        <div className="has-text-centered" style={{ margin: '10px auto' }}>
-          <LoginButton icon="google" name="Google" onClick={this.loginWithProvider} />
-          <LoginButton icon="twitter" name="Twitter" onClick={this.loginWithProvider} />
-          <LoginButton icon="facebook" name="Facebook" onClick={this.loginWithProvider} />
-        </div>
+      <Section>
+      <Tile kind="parent">
+        <Tile renderAs="article" kind="child" size="8" notification color="primary">
 
-        <div className="has-text-centered" style={{ margin: '10px 0' }}>
-          <span style={{ verticalAlign: 'middle', padding: '0 10px' }}><hr /> OR <hr /></span>
-        </div>
+          <Heading size="2" weight="semibold" spaced >Welcome back, friend!</Heading>
+          <Heading subtitle>need to <a href="/signup">register</a> or <a href="/forgot">forgot password</a>?
+          </Heading>
 
-        <LoginForm handleSubmit={this.loginWithEmailAndPassword} />
+        <Section size="4by3">
+          <div className="has-text-centered">
+              <SocialButtonList buttonList={buttonList} auth={auth.getAuth} />
+          </div>
+        </Section>
 
-        <SignInSuccess active={this.state.authenticated} handleClose={this.handleClose} />
+        
         </Tile>
-
-      </section>
+        </Tile>
+      </Section>
     )
   }
 }
 
-const LoginButton = ({ icon, name, onClick }) => (
-  <div className="field">
-    <p className="control button is-small is-warning" style={{ width: '275px' }} onClick={onClick}>
-      <span className="icon">
-        <i className={`fab fa-${icon}`} aria-hidden="true"></i>
-      </span>
-      <span>{`Sign In With ${name}`}</span>
-    </p>
-  </div>
-);
 
-class LoginForm extends Component {
+//This is the propTypes object representing
+//the props that the socialbuttonlist below 
+//is expecting
+const propTypes = {
+  buttonList: PropTypes.shape({
+    github: PropTypes.shape({
+      visible: PropTypes.bool.isRequired,
+      provider: PropTypes.func.isRequired
+    }),
+      email: PropTypes.shape({
+      visible: PropTypes.bool.isRequired,
+      provider: PropTypes.func.isRequired
+    }),
+    twitter: PropTypes.shape({
+      visible: PropTypes.bool.isRequired,
+      provider: PropTypes.func.isRequired
+    }),
+    facebook: PropTypes.shape({
+      visible: PropTypes.bool.isRequired,
+      provider: PropTypes.func.isRequired
+    })
+  }).isRequired,
+  auth: PropTypes.func.isRequired,
+  currentProviders: PropTypes.func
+};
 
-  state = {
-    email: null,
-    password: null
-  }
+const defaultProps = {
+  currentProviders: null
+};
 
-  handleChange = (event) => this.setState({ [event.target.name]: event.target.value })
+//socialbuttonlist component
+//buttonList and auth props required
+//currentProvider is optional
+const SocialButtonList = ({ history, buttonList, auth, currentProviders }) => {
+  const authHandler = authData => {
+    //auth data is an object that comes from 
+      //firebase 
+      if (authData) {
+      if (currentProviders === null) {
+        history.push('/profile');
+      } else {
+        currentProviders(authData.user.providerData);
+      }
+    } else {
+      console.log('Error authenticating');
+    }
+  };
 
-  handleSubmit = () => this.props.handleSubmit(this.state)
-
-  render() {
-    return (
-      <div className="container has-text-centered box" style={{ maxWidth: '350px' }}>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            this.handleSubmit();
-          }}>
-          <div className="field">
-          <p class="control has-icons-left has-icons-right">
-            <label className="label" htmlFor="email">Email</label>
-            <div className="control">
-              <input className="input" name="email" type="email" placeholder="email" required onChange={this.handleChange} />
-              <span class="icon is-small is-left">
-              <i class="fas fa-envelope"></i>
-            </span>
-            <span class="icon is-small is-right">
-              <i class="fas fa-check"></i>
-            </span>
-            </div>
-            </p>
-          </div>
-
-          <div className="field">
-           <p class="control has-icons-left">
-            <label className="label" htmlFor="password">Password</label>
-            <div className="control">
-              <input className="input" name="password" type="password" placeholder="password" required onChange={this.handleChange}/>
-              <span class="icon is-small is-left">
-                <i class="fas fa-lock"></i>
-              </span>
-              </div>
-            </p>
-          </div>
-
-          <div className="field">
-            <div className="control buttons is-centered">
-              <input className="button is-medium is-warning is-fullwidth" type="submit" value="Sign In" />
-            </div>
-          </div>
-        </form>
-      </div>
-    );
-  }
+function onSignIn(user) {
+   // token_id = user.getAuthResponse().id_token
+ //this.setState({token_id});
 }
-
-const SignInSuccess = ({ active, handleClose }) => (
-  <div className={`modal ${active && 'is-active'}`}>
-    <div className="modal-background" onClick={handleClose}></div>
-    <div className="modal-content">
-      <div className="notification is-success has-text-centered">
-        <button className="delete" onClick={handleClose}></button>
-        <p>
-          <span className="icon is-large">
-            <i className="fa fa-check-square fa-2x"></i>
-          </span>
-          <span className="title"> Sign In Succesful!</span>
-        </p>
-
-      </div>
+    
+//providerData is an array of objects 
+    //which contains the connected social
+    //accounts associated to the current User
+  const authenticate = (e, provider) => {
+    const providerOAuth = buttonList[provider].provider();
+//function is called when someone clicks 
+      //one of social buttons to login to connect
+      // a social account
+    if (!auth().currentUser) {
+        var user;
+      auth()
+        .signInWithPopup(providerOAuth)
+        .then(authHandler)
+        .catch(err => console.error(err));
+    } else {
+      auth()
+        .currentUser.linkWithPopup(providerOAuth)
+        .then(authHandler)
+        .catch(err => console.error(err));
+    }
+  };
+//this prop object has the firebase function to call 
+    //each specific provider oAuth method
+    //and is used to sign in or link another provider
+    //to current user
+  const renderButtonList = provder => {
+    const visible = buttonList[provder].visible;
+//this is where we call the authenticate method
+    return (
+      <button
+        key={provder}
+        className={`btn__social btn--${provder} ${!visible && 'hidden'}`}
+        onClick={e => authenticate(e, provder)}
+      >
+        {provder}
+      </button>
+    );
+  };
+//this finally returns list of social buttons
+  return (
+    <div className="btn__social--list">
+      {Object.keys(buttonList).map(renderButtonList)}
     </div>
-  </div>
-);
+  );
+};
 
-export default Auth;
+SocialButtonList.propTypes = propTypes;
+SocialButtonList.defaultProps = defaultProps;
+
+//export default withRouter(SocialButtonList);
+
+export default withRouter(Auth);
