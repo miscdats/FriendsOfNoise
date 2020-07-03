@@ -10,9 +10,9 @@ Web application for all ages concerts organization Friends of Noise.
 ## Screenshots
 ![Portal](screenshots/2019-05-05.png)
 
-![Store](screenshots/2019-05-05 (2).png)
+![Store](screenshots/fon1.png)
 
-![Calendar](screenshots/calendar 2.png)
+![Calendar](screenshots/fon2.png)
 
 ## Built With
 * [React](https://reactjs.org/) - Javascript library for interfaces
